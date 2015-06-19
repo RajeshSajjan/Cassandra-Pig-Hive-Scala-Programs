@@ -1,0 +1,121 @@
+Q10.
+1)
+CREATE COLUMN FAMILY users
+    WITH comparator = UTF8Type
+    AND key_validation_class=UTF8Type
+    AND column_metadata = [
+   {column_name: UsersID, validation_class: UTF8Type, index_type: KEYS}  
+   {column_name: Gender, validation_class: UTF8Type}
+   {column_name: Age, validation_class: UTF8Type}
+   {column_name: Occupation, validation_class: UTF8Type}
+{column_name: Zip_code, validation_class: UTF8Type}
+   ];
+
+2)
+i)
+a)SET users['13']['UsersID']='13';
+SET users['13']['Gender']='F';
+SET users['13']['Age']='51';
+SET users['13']['Occupation']='1';
+SET users['13']['Zip_code']='93334';
+
+b)
+SET users['1471']['UsersID']='1471';
+SET users['1471']['Gender']='F';
+SET users['1471']['Age']='31';
+SET users['1471']['Occupation']='17';
+SET users['1471']['Zip_code']='11116';	
+
+c)
+SET users['1496']['UsersID']='1496' with ttl=300;
+SET users['1496']['Gender']='F' with ttl=300;
+SET users['1496']['Age']='31' with ttl=300;
+SET users['1496']['Occupation']='17' with ttl=300;
+SET users['1496']['Zip_code']='94118' with ttl=300;	
+
+3-
+i)
+GET users['13']['Gender'];
+=> (name=Gender, value=F, timestamp=1427782130924000)
+Elapsed time: 43 msec(s).
+GET users['13']['Age'];
+=> (name=Age, value=51, timestamp=1427782144178000)
+Elapsed time: 41 msec(s).
+ii)
+LIST users;
+
+Using default limit of 100
+Using default cell limit of 100
+-------------------
+RowKey: 1496
+=> (name=Age, value=31, timestamp=1427782424657000)
+=> (name=Gender, value=F, timestamp=1427782412945000)
+=> (name=Occupation, value=17, timestamp=1427782436001000)
+=> (name=UsersID, value=1496, timestamp=1427782402328000)
+=> (name=Zip_code, value=94118, timestamp=1427782458142000)
+-------------------
+RowKey: 13
+=> (name=Age, value=51, timestamp=1427782144178000)
+=> (name=Gender, value=F, timestamp=1427782130924000)
+=> (name=Occupation, value=1, timestamp=1427782156770000)
+=> (name=UsersID, value=13, timestamp=1427781982241000)
+=> (name=Zip_code, value=93334, timestamp=1427782169579000)
+-------------------
+RowKey: 1471
+=> (name=Age, value=31, timestamp=1427782301387000)
+=> (name=Gender, value=F, timestamp=1427782287728000)
+=> (name=Occupation, value=17, timestamp=1427782313879000)
+=> (name=UsersID, value=1471, timestamp=1427782278008000)
+=> (name=Zip_code, value=11116, timestamp=1427782326735000)
+
+3 Rows Returned.
+Elapsed time: 405 msec(s).
+
+iii)del users['1471']['Gender'];
+cell removed.
+Elapsed time: 20 msec(s).
+
+iv)drop column family users;
+
+
+4) DESCRIBE rxs130830;
+WARNING: CQL3 tables are intentionally omitted from 'describe' output.
+See https://issues.apache.org/jira/browse/CASSANDRA-4377 for details.
+
+Keyspace: arg130330:
+  Replication Strategy: org.apache.cassandra.locator.SimpleStrategy
+  Durable Writes: true
+    Options: [replication_factor:1]
+  Column Families:
+ ColumnFamily: users
+      Key Validation Class: org.apache.cassandra.db.marshal.UTF8Type
+      Default column value validator: org.apache.cassandra.db.marshal.BytesType
+      Cells sorted by: org.apache.cassandra.db.marshal.UTF8Type
+      GC grace seconds: 864000
+      Compaction min/max thresholds: 4/32
+      Read repair chance: 0.1
+      DC Local Read repair chance: 0.0
+      Populate IO Cache on flush: false
+      Replicate on write: true
+      Caching: KEYS_ONLY
+      Default time to live: 0
+      Bloom Filter FP chance: default
+      Index interval: 128
+      Speculative Retry: NONE
+      Built indexes: [users.users_UsersID_idx]
+Column Metadata:
+        Column Name: Zip_code
+          Validation Class: org.apache.cassandra.db.marshal.UTF8Type
+        Column Name: UsersID
+          Validation Class: org.apache.cassandra.db.marshal.UTF8Type
+          Index Name: users_UsersID_idx
+          Index Type: KEYS
+        Column Name: Age
+          Validation Class: org.apache.cassandra.db.marshal.UTF8Type
+        Column Name: Occupation
+          Validation Class: org.apache.cassandra.db.marshal.UTF8Type
+        Column Name: Gender
+          Validation Class: org.apache.cassandra.db.marshal.UTF8Type
+      Compaction Strategy: org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy
+      Compression Options:
+        sstable_compression: org.apache.cassandra.io.compress.LZ4Compressor

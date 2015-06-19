@@ -1,0 +1,64 @@
+
+mahout spark-itemsimilarity --input /rxs130830/ratings.dat --output /rxs130830/outputMatrix --maxSimilaritiesPerItem 5 --inDelim "::" --filter1 "4" --rowIDColumn 0 --itemIDColumn 1 --filterColumn 2
+
+val userID = "20"
+
+val ratingsData = sc.textFile("/rxs130830/ratings.dat")
+
+val ratingsArray = ratingsData.toArray
+
+val ratedList = new scala.collection.mutable.MutableList[String]
+
+for(i <- 0 until ratingsArray.length){
+	val rateLine = ratingsArray(i).split("::")
+	if(rateLine(0) == userID && rateLine(2) == "3") {
+		ratedList += rateLine(1)
+	}
+}
+print(ratedList)
+
+val sampleMatrix = sc.textFile("/rxs130830/outputMatrix/indicator-matrix")
+
+val sampleArray = sampleMatrix.toArray
+
+val sampleMap = new scala.collection.mutable.HashMap[String,scala.collection.mutable.MutableList[String]]
+
+for(i <- 0 until sampleArray.length){
+	val sampleLine = sampleArray(i).split("\\s+")
+	val sampleKey = sampleLine(0)
+		if(ratedList.contains(sampleKey)){
+			if(sampleLine.length > 1){
+				val movieList = new scala.collection.mutable.MutableList[String]
+				for( j <- 1 until sampleLine.length){
+					val movieSeparator = sampleLine(j).split(":")
+					val movieID = movieSeparator(0)
+					movieList += movieID
+				}
+				sampleMap(sampleKey) = movieList
+			       
+			}
+	}
+}
+print(sampleMap)
+
+val movielst = sc.textFile("/rxs130830/movies.dat")
+val movieMapping = new scala.collection.mutable.HashMap[String,String]
+val movieArray=movielst.toArray
+for(i <- 0 until movieArray.length){
+	val movieLine = movieArray(i).split("::")
+	movieMapping(movieLine(0)) = movieLine(1)
+}
+
+print(movieMapping)
+
+for(i <- 0 until ratedList.length){
+	val movielst = ratedList(i)
+	if(sampleMap.contains(movielst)){
+		println("")
+		print(movielst+":"+movieMapping(movielst)+" ")
+		for(i <- 0 until sampleMap(movielst).length){
+			print(sampleMap(movielst)(i)+":"+movieMapping(sampleMap(movielst)(i)) + ",")
+		}
+		println("")
+	}
+}

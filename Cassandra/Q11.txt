@@ -1,0 +1,19 @@
+1)create table user (userid varchar primary key, gender varchar, age varchar,occupation varchar, zipcode varchar);
+
+2)
+(copied /cassandra-input/users.dat to local at users.dat)
+copy user(userid, gender, age,occupation,zipcode) from './users.dat' with delimiter=':';
+6040 rows imported in 5.178 seconds.
+
+3)insert into user (userid, gender, age,occupation,zipcode) values('6041','M','32','6','11120');
+
+4)select * from user where userid='6020';
+
+ userid | age | gender | occupation | zipcode
+--------+-----+--------+------------+---------
+   6020 |  56 |      F |         16 |   10003
+
+(1 rows)
+
+5)truncate user;
+6)drop table user;
