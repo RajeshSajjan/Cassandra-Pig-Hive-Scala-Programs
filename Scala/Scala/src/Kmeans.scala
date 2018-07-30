@@ -22,6 +22,7 @@ object KMeans {
   
   def main(args: Array[String]) {
     //get the input file
+    //Code
     var dataFile ="src/AlFiles/Q1_testkmean.txt"
     // initialize the spark context
     var sc = new SparkContext("local", "KMeans App", "/path/to/spark-0.9.1-incubating",List("target/scala-2.10/simple-project_2.10-1.0.jar"))
